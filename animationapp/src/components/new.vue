@@ -62,7 +62,7 @@
               </div>
             </div>
           </div>
-          {{ checkedNames }}
+      
           <div class="body_about_option">
             <h2>About this option</h2>
 
@@ -88,7 +88,7 @@
             Graphic
           </h2>
 
-          <div style="height: 500px;" class="body_graph_graph border">
+          <div style="height: 500px;" class="body_graph_graph ">
             fff
           </div>
           <div class="body_graph__radioSlider">
