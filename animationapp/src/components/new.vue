@@ -50,6 +50,7 @@
                       class="checkbox_body"
                       type="checkbox"
                       name=""
+                  
                       :value="i.text"
                       id=""
                       v-model="checkedNames"
@@ -62,7 +63,7 @@
               </div>
             </div>
           </div>
-          {{ checkedNames }}
+
           <div class="body_about_option">
             <h2>About this option</h2>
 
@@ -92,10 +93,10 @@
             fff
           </div>
           <div class="body_graph__radioSlider">
-            <input type="range" style="width: 100%;" name="" id="">
+            <input type="range" style="width: 100%;" name="" id="" />
           </div>
           <div class="body_graph__button  d-flex justify-content-center">
-            <button class='mx-auto '>Play</button>
+            <button class="mx-auto buttonpl buttonMain" v-on:click='buttonPlayFun()'>Play</button>
           </div>
         </div>
       </div>
@@ -113,6 +114,7 @@ export default {
   data() {
     return {
       modalWind: false,
+      buttonPlay: false,
       classes: [
         "body_about_option__card",
         "body_card_animation",
@@ -210,7 +212,49 @@ export default {
     };
   },
   methods: {
+    // ГРАФИКИ
+    graph() {
+      if(this.buttonPlay == true ) {
+        setTimeout(function() {
+          let doc = this.classModules('.buttonpl')
+          this.buttonPlay = false
+          doc('buttonPlayAnim', 'remove')
+        console.log(false)
+        doc('buttonPlayChec', 'remove')
+        doc('buttonMain', 'add')
+          console.log(this.buttonPlay)
+        }.bind(this),3000)
+      }
+      
+    },
     // ЧЕК БОКСЫ
+
+
+
+    buttonPlayFun() {
+      this.buttonPlay = !this.buttonPlay
+      let doc = this.classModules('.buttonpl')
+      this.graph()
+      if(this.buttonPlay == true) {
+       console.log(true)
+       doc('buttonPlayAnim', 'add')
+       setTimeout(function() {
+         doc('buttonPlayChec', 'add')
+         doc('buttonMain', 'remove')
+       }, 1000)
+       
+   
+   
+   
+      }
+      else if(this.buttonPlay == false) {
+        doc('buttonPlayAnim', 'remove')
+        console.log(false)
+        doc('buttonPlayChec', 'remove')
+        doc('buttonMain', 'add')
+      }
+ 
+    },
     someFun() {
       console.log("ПРОВЕРКА");
     },
@@ -222,6 +266,9 @@ export default {
         if (doing == "remove") {
           document.querySelector(classe).classList.remove(classRemove);
         }
+        if(doing == 'disable') {
+          document.querySelector(classe).disabled = true
+        }
       };
     },
     modal() {
@@ -231,28 +278,41 @@ export default {
     modalWindow(classesShow, classesDown) {
       let wind = document.querySelector(classesShow);
       let but = document.querySelector(".header_button");
-      let butt = this.classModules('.header_button')
+      let butt = this.classModules(".header_button");
+   
+
+
+      let checko = document.querySelectorAll('.checkbox_body')
+
       let back = document.querySelector(".back");
       console.log(classesDown);
       if (this.modalWind == true) {
         but.disabled = true;
-      
-        butt('header_button_hov', 'remove')
+        
+        butt("header_button_hov", "remove");
         wind.style.display = "block";
         wind.classList.remove("modal_dowm");
         wind.classList.add("modal_show");
         back.classList.add("another");
+        for(let i in checko) {
+          checko[i].disabled = true
+        }
       }
       if (this.modalWind == false) {
         wind.classList.remove("modal_show");
         wind.classList.add("modal_dowm");
-
+     
         setTimeout(function() {
-          butt('header_button_hov', 'add')
+         
+          butt("header_button_hov", "add");
           document.querySelector(".header_button").disabled = false;
           back.classList.remove("another");
           wind.style.display = "none";
         }, 1300);
+
+        for(let i in checko) {
+          checko[i].disabled = false
+        }
       }
     },
     checkboxToggle(e) {
@@ -287,6 +347,7 @@ export default {
 
   // при обновлении
   updated() {
+
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
@@ -295,16 +356,20 @@ export default {
     this.checkedMass = rea;
   },
 
+// ПРИ МОНТИРОВАНИИ
   mounted() {
-    // console.log(typeof this.all);
-    // let al = this.all.map(function(item, index) {
-    //     return [index, item]
-    // })
-    // console.log(al)
+    let doc = this.classModules('.buttonpl')
+     if(this.buttonPlay == false) {
+        doc('buttonPlayAnim', 'remove')
+        console.log(false)
+        doc('buttonPlayChec', 'remove')
+        doc('buttonMain', 'add')
+      }
+
   },
 };
 </script>
 
 <style>
-@import url('../assets/css/style.css');
+@import url("../assets/css/style.css");
 </style>
