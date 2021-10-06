@@ -18,7 +18,7 @@
           </button>
         </div>
       </div>
-ЭТО ДОБАВЛКНИЕ
+
       <div class="row body">
         <div
           style="display: none"
@@ -50,7 +50,6 @@
                       class="checkbox_body"
                       type="checkbox"
                       name=""
-                  
                       :value="i.text"
                       id=""
                       v-model="checkedNames"
@@ -63,7 +62,7 @@
               </div>
             </div>
           </div>
-      
+          {{ checkedNames }}
           <div class="body_about_option">
             <h2>About this option</h2>
 
@@ -90,13 +89,20 @@
           </h2>
 
           <div style="height: 500px;" class="body_graph_graph ">
-            fff
+            <canvas width="650" height="500" class="" id="canvasEx"
+              >aaaaf ffsd</canvas
+            >
           </div>
           <div class="body_graph__radioSlider">
             <input type="range" style="width: 100%;" name="" id="" />
           </div>
           <div class="body_graph__button  d-flex justify-content-center">
-            <button class="mx-auto buttonpl buttonMain" v-on:click='buttonPlayFun()'>Play</button>
+            <button
+              class="mx-auto buttonpl buttonMain"
+              v-on:click="buttonPlayFun()"
+            >
+              Play
+            </button>
           </div>
         </div>
       </div>
@@ -109,6 +115,169 @@
   </div>
 </template>
 <script>
+// import myMix from '@/components/methodMixin.vue'
+// console.log(myMix)
+
+let myMix = {
+  methods: {
+    // ГРАФИКИ
+    createGraph(formula, id) {
+      console.log([formula, id]);
+     
+      let realX = 4
+      let x = `let t = ${realX}`
+      
+      let y =  x +  "; " + formula
+      console.log(y)
+      console.log([eval(y), realX])
+
+      let canvasEx = document.getElementById("canvasEx");
+      let ctxe = canvasEx.getContext("2d");
+      let ctx = [ctxe, canvasEx];
+      ctx[0].beginPath();
+      ctx[0].moveTo(0, 0);
+      ctx[0].lineTo(eval(y),realX);
+      ctx[0].stroke();
+    },
+
+    canvasFun() {
+      let canvasEx = document.getElementById("canvasEx");
+      let ctx = canvasEx.getContext("2d");
+      console.log(ctx);
+      ctx.translate(0, canvasEx.height);
+      ctx.rotate(-Math.PI / 2);
+      return [ctx, canvasEx];
+    },
+    graph() {
+      if (this.buttonPlay == true) {
+        setTimeout(
+          function() {
+            let doc = this.classModules(".buttonpl");
+            this.buttonPlay = false;
+            doc("buttonPlayAnim", "remove");
+            console.log(false);
+            doc("buttonPlayChec", "remove");
+            doc("buttonMain", "add");
+            console.log(this.buttonPlay);
+          }.bind(this),
+          3000
+        );
+      }
+    },
+    // ЧЕК БОКСЫ
+
+    buttonPlayFun() {
+      this.buttonPlay = !this.buttonPlay;
+      let doc = this.classModules(".buttonpl");
+      this.graph();
+      if (this.buttonPlay == true) {
+        console.log(true);
+        doc("buttonPlayAnim", "add");
+        setTimeout(function() {
+          doc("buttonPlayChec", "add");
+          doc("buttonMain", "remove");
+        }, 1000);
+      } else if (this.buttonPlay == false) {
+        doc("buttonPlayAnim", "remove");
+        console.log(false);
+        doc("buttonPlayChec", "remove");
+        doc("buttonMain", "add");
+      }
+    },
+    someFun() {
+      console.log("ПРОВЕРКА");
+    },
+    classModules(classe) {
+      return function(classRemove, doing) {
+        if (doing == "add") {
+          document.querySelector(classe).classList.add(classRemove);
+        }
+        if (doing == "remove") {
+          document.querySelector(classe).classList.remove(classRemove);
+        }
+        if (doing == "disable") {
+          document.querySelector(classe).disabled = true;
+        }
+      };
+    },
+    modal() {
+      this.modalWind = !this.modalWind;
+      this.modalWindow(".modal-window", ".modal_down");
+    },
+    modalWindow(classesShow, classesDown) {
+      let wind = document.querySelector(classesShow);
+      let but = document.querySelector(".header_button");
+      let butt = this.classModules(".header_button");
+
+      let checko = document.querySelectorAll(".checkbox_body");
+
+      let back = document.querySelector(".back");
+      console.log(classesDown);
+      if (this.modalWind == true) {
+        but.disabled = true;
+
+        butt("header_button_hov", "remove");
+        wind.style.display = "block";
+        wind.classList.remove("modal_dowm");
+        wind.classList.add("modal_show");
+        back.classList.add("another");
+        for (let i in checko) {
+          checko[i].disabled = true;
+        }
+      }
+      if (this.modalWind == false) {
+        wind.classList.remove("modal_show");
+        wind.classList.add("modal_dowm");
+
+        setTimeout(function() {
+          butt("header_button_hov", "add");
+          document.querySelector(".header_button").disabled = false;
+          back.classList.remove("another");
+          wind.style.display = "none";
+        }, 1300);
+
+        for (let i in checko) {
+          checko[i].disabled = false;
+        }
+      }
+    },
+
+    // ЧЕКБОКС ТОГГЛ
+    checkboxToggle(e) {
+      if (e.target.checked == false) {
+        console.log(e.target.value);
+        console.log(e);
+        this.someFun();
+
+        let doc = document.querySelector(`.${e.target.value}`);
+        doc.classList.remove("checkbox_anima__all");
+        document.querySelector(".body-card").classList.add("aawaaaa");
+      }
+
+      // если не нажат
+      else {
+        let doc = document.querySelector(`.${e.target.value}`);
+        doc.classList.add("checkbox_anima__all");
+        console.log(this.checkedMass);
+      }
+    },
+    transformMassive(firstMassive, allMassive, classAdd) {
+      let checkedMassives = [];
+
+      for (let i in allMassive) {
+        firstMassive.forEach((item) => {
+          if (i == item) {
+            allMassive[i].class = classAdd;
+            checkedMassives.push(allMassive[i]);
+          }
+        });
+      }
+
+      return checkedMassives;
+    },
+  },
+};
+
 export default {
   name: "vue",
   data() {
@@ -134,30 +303,61 @@ export default {
             description: "no easing, no acceleration",
             formula: "t",
             equation: "t",
+            func(y) {
+              let y1 = y
+              let x = y
+              return [x,y1]
+            }
           },
           easeInQuad: {
             text: "easeInQuad",
             description: "accelerating from zero velocity",
             formula: "t^2",
             equation: "t*t",
+            func(y) {
+              let y1 = y
+              let x = y*y
+              return [x,y1]
+            }
           },
           easeOutQuad: {
             text: "easeOutQuad",
             description: "decelerating to zero velocity",
             formula: "t*(2-t)",
             equation: "t*(2-t)",
+            func(y) {
+              let y1 = y
+              let x = y1*(2-y1)
+              return [x,y1]
+            }
           },
           easeInOutQuad: {
             text: "easeInOutQuad",
             description: "acceleration until halfway, then deceleration",
             formula: "t<.5 ? 2t^2 : -1+(4-2t)t",
             equation: "t<.5 ? 2*t*t : -1+(4-2*t)*t",
+            func(y) {
+              let y1 = y
+              let x  = 0
+              if(y1 < 5) {
+                x = 2 * y*y
+              }
+              else {
+                x = -1+(4-2*y)*y
+              }
+              return [x,y1]
+            }
           },
           easeInCubic: {
             text: "easeInCubic",
             description: "accelerating from zero velocity ",
             formula: "t^3",
             equation: "t*t*t",
+            func(y) {
+              let y1 = y
+              let x = Math.pow(y1,3)
+              return [x,y1]
+            }
           },
           easeOutCubic: {
             text: "easeOutCubic",
@@ -176,6 +376,11 @@ export default {
             description: "accelerating from zero velocity ",
             formula: "t^4",
             equation: "t*t*t*t",
+            func(y) {
+              let y1 = y
+              let x = Math.pow(y1,4)
+              return [x,y1]
+            }
           },
           easeOutQuart: {
             text: "easeOutQuart",
@@ -194,6 +399,11 @@ export default {
             description: "accelerating from zero velocity",
             formula: "t^5",
             equation: "t*t*t*t*t",
+            func(y) {
+              let y1 = y
+              let x = Math.pow(y1,5)
+              return [x,y1]
+            }
           },
           easeOutQuint: {
             text: "easeOutQuint",
@@ -211,161 +421,59 @@ export default {
       },
     };
   },
-  methods: {
-    // ГРАФИКИ
-    graph() {
-      if(this.buttonPlay == true ) {
-        setTimeout(function() {
-          let doc = this.classModules('.buttonpl')
-          this.buttonPlay = false
-          doc('buttonPlayAnim', 'remove')
-        console.log(false)
-        doc('buttonPlayChec', 'remove')
-        doc('buttonMain', 'add')
-          console.log(this.buttonPlay)
-        }.bind(this),3000)
-      }
-      
-    },
-    // ЧЕК БОКСЫ
+  mixins: [myMix],
 
-
-
-    buttonPlayFun() {
-      this.buttonPlay = !this.buttonPlay
-      let doc = this.classModules('.buttonpl')
-      this.graph()
-      if(this.buttonPlay == true) {
-       console.log(true)
-       doc('buttonPlayAnim', 'add')
-       setTimeout(function() {
-         doc('buttonPlayChec', 'add')
-         doc('buttonMain', 'remove')
-       }, 1000)
-       
-   
-   
-   
-      }
-      else if(this.buttonPlay == false) {
-        doc('buttonPlayAnim', 'remove')
-        console.log(false)
-        doc('buttonPlayChec', 'remove')
-        doc('buttonMain', 'add')
-      }
- 
-    },
-    someFun() {
-      console.log("ПРОВЕРКА");
-    },
-    classModules(classe) {
-      return function(classRemove, doing) {
-        if (doing == "add") {
-          document.querySelector(classe).classList.add(classRemove);
-        }
-        if (doing == "remove") {
-          document.querySelector(classe).classList.remove(classRemove);
-        }
-        if(doing == 'disable') {
-          document.querySelector(classe).disabled = true
-        }
-      };
-    },
-    modal() {
-      this.modalWind = !this.modalWind;
-      this.modalWindow(".modal-window", ".modal_down");
-    },
-    modalWindow(classesShow, classesDown) {
-      let wind = document.querySelector(classesShow);
-      let but = document.querySelector(".header_button");
-      let butt = this.classModules(".header_button");
-   
-
-
-      let checko = document.querySelectorAll('.checkbox_body')
-
-      let back = document.querySelector(".back");
-      console.log(classesDown);
-      if (this.modalWind == true) {
-        but.disabled = true;
-        
-        butt("header_button_hov", "remove");
-        wind.style.display = "block";
-        wind.classList.remove("modal_dowm");
-        wind.classList.add("modal_show");
-        back.classList.add("another");
-        for(let i in checko) {
-          checko[i].disabled = true
-        }
-      }
-      if (this.modalWind == false) {
-        wind.classList.remove("modal_show");
-        wind.classList.add("modal_dowm");
-     
-        setTimeout(function() {
-         
-          butt("header_button_hov", "add");
-          document.querySelector(".header_button").disabled = false;
-          back.classList.remove("another");
-          wind.style.display = "none";
-        }, 1300);
-
-        for(let i in checko) {
-          checko[i].disabled = false
-        }
-      }
-    },
-    checkboxToggle(e) {
-      if (e.target.checked == false) {
-        console.log(e.target.value);
-        console.log(e);
-        this.someFun();
-        let doc = document.querySelector(`.${e.target.value}`);
-        doc.classList.remove("checkbox_anima__all");
-        document.querySelector(".body-card").classList.add("aawaaaa");
-      } else {
-        let doc = document.querySelector(`.${e.target.value}`);
-        doc.classList.add("checkbox_anima__all");
-        console.log("чекед еще не НАЖАТ");
-      }
-    },
-    transformMassive(firstMassive, allMassive, classAdd) {
-      let checkedMassives = [];
-
-      for (let i in allMassive) {
-        firstMassive.forEach((item) => {
-          if (i == item) {
-            allMassive[i].class = classAdd;
-            checkedMassives.push(allMassive[i]);
-          }
-        });
-      }
-
-      return checkedMassives;
-    },
-  },
-
+  computed: {},
   // при обновлении
-  updated() {
-
+  beforeUpdate() {
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
       "checkbox_anima__all"
     );
     this.checkedMass = rea;
+    console.log(rea);
+
+    // выводим формулы
+    rea.forEach((item) => {
+      this.createGraph(item.equation, item.text);
+    });
   },
 
-// ПРИ МОНТИРОВАНИИ
+  // ПРИ МОНТИРОВАНИИ
   mounted() {
-    let doc = this.classModules('.buttonpl')
-     if(this.buttonPlay == false) {
-        doc('buttonPlayAnim', 'remove')
-        console.log(false)
-        doc('buttonPlayChec', 'remove')
-        doc('buttonMain', 'add')
-      }
+    let ev = "let t = 20;  t*t"
+    console.log(eval(ev))
+    // CANVAS
+    let ctxMass = this.canvasFun();
+    console.log(ctxMass[1]);
+    // FIRST
+    ctxMass[0].beginPath();
 
+    ctxMass[0].moveTo(0, 0);
+    ctxMass[0].lineTo(0, ctxMass[1].width);
+
+    ctxMass[0].fillText("10c", 0, ctxMass[1].width);
+    ctxMass[0].font = "30px";
+    ctxMass[0].stroke();
+
+    // SECOND
+    ctxMass[0].beginPath();
+    ctxMass[0].moveTo(0, 0);
+    ctxMass[0].lineTo(ctxMass[1].height, 0);
+
+    ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
+    ctxMass[0].font = `${"68px"}`;
+    ctxMass[0].stroke();
+
+    
+    let doc = this.classModules(".buttonpl");
+    if (this.buttonPlay == false) {
+      doc("buttonPlayAnim", "remove");
+      console.log(false);
+      doc("buttonPlayChec", "remove");
+      doc("buttonMain", "add");
+    }
   },
 };
 </script>
