@@ -156,6 +156,9 @@
     left: 0;
   }
 }
+.CL  {
+  color: red;
+}
 .buttonPlayChec {
   color: white;
   background: #235a83;
