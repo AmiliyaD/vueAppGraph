@@ -136,4 +136,6 @@
     },
   }
     }
+
+    console.log(myMix)
 </script>

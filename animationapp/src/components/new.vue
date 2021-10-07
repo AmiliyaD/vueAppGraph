@@ -117,29 +117,72 @@
 <script>
 // import myMix from '@/components/methodMixin.vue'
 // console.log(myMix)
-
+// import myMixin from '../components/methodMixin.vue'
 let myMix = {
   methods: {
     // ГРАФИКИ
+
+    // строит графики
     createGraph(formula, id) {
       console.log([formula, id]);
-     
+
+    // проба 2
+  let c  = this.curveBes()
+  console.log(c)
+      // проба
+
+      let realX2 = [4,6,7]
+      let mapReal = realX2.map((item) => {
+        let allMass = []
+        let x =  `let t = ${item}`
+        let y = x + '; ' + formula
+        let coors = [eval(y), item]
+        allMass.push(coors)
+        return allMass
+      })
+  console.log(mapReal)
       let realX = 4
       let x = `let t = ${realX}`
       
       let y =  x +  "; " + formula
+      let coors = [eval(y), realX]
       console.log(y)
-      console.log([eval(y), realX])
+      console.log(coors)
 
       let canvasEx = document.getElementById("canvasEx");
       let ctxe = canvasEx.getContext("2d");
       let ctx = [ctxe, canvasEx];
       ctx[0].beginPath();
       ctx[0].moveTo(0, 0);
-      ctx[0].lineTo(eval(y),realX);
+      ctx[0].lineWidth = 2;
+      ctx[0].lineCap = 'round'
+      //  ctx[0].quadraticCurveTo(coors[0],coors[1],coors[1],coors[0])
+      //  ctx[0].bezierCurveTo()
+       ctx[0].bezierCurveTo(mapReal[0][0][0],mapReal[0][0][1],mapReal[1][0][0],mapReal[1][0][1],mapReal[2][0][0],mapReal[2][0][1])
+      //  [y,x | y,x | y,x]
+      // ctx[0].quadraticCurveTo(70,100,50,100)
+      // ctx[0].lineTo(eval(y),realX);
       ctx[0].stroke();
     },
 
+  curveBes(t=[0.2,0.3,0.4], y=[4,5,6], x=[5,6,7]) {
+    console.log(t)
+
+    let xP = []
+    let yP = []
+
+        t.forEach((item) => {
+
+        let xPc = Math.pow(1-item, 2) * x[0] + 2* (1-item)*x[1] + Math.pow(item,2)*x[2]
+      let yPc =  Math.pow(1-item, 2) * y[0] + 2 * (1-item)*y[1] + Math.pow(item,2)*y[2]
+       xP.push(xPc)
+      yP.push(yPc)
+    })
+
+    return [xP, yP]
+  },
+
+// создает канвас
     canvasFun() {
       let canvasEx = document.getElementById("canvasEx");
       let ctx = canvasEx.getContext("2d");
@@ -148,6 +191,8 @@ let myMix = {
       ctx.rotate(-Math.PI / 2);
       return [ctx, canvasEx];
     },
+
+    // кнопка графика
     graph() {
       if (this.buttonPlay == true) {
         setTimeout(
@@ -442,18 +487,20 @@ export default {
 
   // ПРИ МОНТИРОВАНИИ
   mounted() {
-    let ev = "let t = 20;  t*t"
-    console.log(eval(ev))
     // CANVAS
     let ctxMass = this.canvasFun();
-    console.log(ctxMass[1]);
+
+    // let canvH = ctxMass[1].height
+
     // FIRST
     ctxMass[0].beginPath();
 
     ctxMass[0].moveTo(0, 0);
     ctxMass[0].lineTo(0, ctxMass[1].width);
-
-    ctxMass[0].fillText("10c", 0, ctxMass[1].width);
+ for(let i =0; i <= ctxMass[1].width; i = i + 50) {
+      ctxMass[0].fillText(` ${i} `, 0, i)
+    }
+    ctxMass[0].fillText("3c", 0, ctxMass[1].width);
     ctxMass[0].font = "30px";
     ctxMass[0].stroke();
 
@@ -462,8 +509,10 @@ export default {
     ctxMass[0].moveTo(0, 0);
     ctxMass[0].lineTo(ctxMass[1].height, 0);
 
-    ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
-    ctxMass[0].font = `${"68px"}`;
+    // ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
+    for(let i =0; i <= ctxMass[1].height; i = i + 50) {
+      ctxMass[0].fillText(` ${i} `, i, 10)
+    }
     ctxMass[0].stroke();
 
     
