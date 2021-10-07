@@ -126,28 +126,21 @@ let myMix = {
     createGraph(formula, id) {
       console.log([formula, id]);
 
-    // проба 2
-  let c  = this.curveBes()
-  console.log(c)
       // проба
 
-      let realX2 = [4,6,7]
+      let realX2 = [7, 12, 14];
       let mapReal = realX2.map((item) => {
-        let allMass = []
-        let x =  `let t = ${item}`
-        let y = x + '; ' + formula
-        let coors = [eval(y), item]
-        allMass.push(coors)
-        return allMass
-      })
-  console.log(mapReal)
-      let realX = 4
-      let x = `let t = ${realX}`
-      
-      let y =  x +  "; " + formula
-      let coors = [eval(y), realX]
-      console.log(y)
-      console.log(coors)
+        let allMass = [];
+        let x = `let t = ${item}`;
+        let y = x + "; " + formula;
+        let coors = [eval(y), item];
+        allMass.push(coors);
+        return allMass;
+      });
+      // проба 2
+      let c = this.curveBes([0.1, 0.7, 0.5], realX2, mapReal);
+      console.log(c);
+      console.log(mapReal);
 
       let canvasEx = document.getElementById("canvasEx");
       let ctxe = canvasEx.getContext("2d");
@@ -155,34 +148,61 @@ let myMix = {
       ctx[0].beginPath();
       ctx[0].moveTo(0, 0);
       ctx[0].lineWidth = 2;
-      ctx[0].lineCap = 'round'
-      //  ctx[0].quadraticCurveTo(coors[0],coors[1],coors[1],coors[0])
-      //  ctx[0].bezierCurveTo()
-       ctx[0].bezierCurveTo(mapReal[0][0][0],mapReal[0][0][1],mapReal[1][0][0],mapReal[1][0][1],mapReal[2][0][0],mapReal[2][0][1])
+      ctx[0].lineCap = "round";
+      ctx[0].bezierCurveTo(20, 20, 200, 200, 20, 400);
+
+      ctx[0].bezierCurveTo(
+        mapReal[0][0][0],
+        mapReal[0][0][1],
+        mapReal[1][0][0],
+        mapReal[1][0][1],
+        mapReal[2][0][0],
+        mapReal[2][0][1]
+      );
+
+
+      // ПРОБА 3
+    
+      for(let i = 0; i < ctx[1].width; i = i + 1) {
+        let x = (i-ctx[1].width/2) / 400
+        let y = Math.pow(x,2)
+        ctx[0].fillRect(x * 400 + ctx[1].width, ctx[1].height - 400 * y,3,3)
+      } 
+
+      //  ctx[0].bezierCurveTo(mapReal[0][0][0],mapReal[0][0][1],mapReal[1][0][0],mapReal[1][0][1],mapReal[2][0][0],mapReal[2][0][1])
+
       //  [y,x | y,x | y,x]
       // ctx[0].quadraticCurveTo(70,100,50,100)
       // ctx[0].lineTo(eval(y),realX);
       ctx[0].stroke();
     },
 
-  curveBes(t=[0.2,0.3,0.4], y=[4,5,6], x=[5,6,7]) {
-    console.log(t)
+    // ФУНКЦИЯ ДЛЯ КРИВЫХ
+    curveBes(t = [0.2, 0.3, 0.4], y = [4, 5, 6], x = [5, 6, 7]) {
+      console.log(t);
 
-    let xP = []
-    let yP = []
+      let xP = [];
+      let yP = [];
 
-        t.forEach((item) => {
+      t.forEach((item) => {
+        let xPc = Math.round(
+          Math.pow(1 - item, 2) * x[0] +
+            2 * (1 - item) * x[1] +
+            Math.pow(item, 2) * x[2]
+        );
+        let yPc = Math.round(
+          Math.pow(1 - item, 2) * y[0] +
+            2 * (1 - item) * y[1] +
+            Math.pow(item, 2) * y[2]
+        );
+        xP.push(xPc);
+        yP.push(yPc);
+      });
 
-        let xPc = Math.pow(1-item, 2) * x[0] + 2* (1-item)*x[1] + Math.pow(item,2)*x[2]
-      let yPc =  Math.pow(1-item, 2) * y[0] + 2 * (1-item)*y[1] + Math.pow(item,2)*y[2]
-       xP.push(xPc)
-      yP.push(yPc)
-    })
+      return [xP, yP];
+    },
 
-    return [xP, yP]
-  },
-
-// создает канвас
+    // создает канвас
     canvasFun() {
       let canvasEx = document.getElementById("canvasEx");
       let ctx = canvasEx.getContext("2d");
@@ -349,10 +369,10 @@ export default {
             formula: "t",
             equation: "t",
             func(y) {
-              let y1 = y
-              let x = y
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = y;
+              return [x, y1];
+            },
           },
           easeInQuad: {
             text: "easeInQuad",
@@ -360,10 +380,10 @@ export default {
             formula: "t^2",
             equation: "t*t",
             func(y) {
-              let y1 = y
-              let x = y*y
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = y * y;
+              return [x, y1];
+            },
           },
           easeOutQuad: {
             text: "easeOutQuad",
@@ -371,10 +391,10 @@ export default {
             formula: "t*(2-t)",
             equation: "t*(2-t)",
             func(y) {
-              let y1 = y
-              let x = y1*(2-y1)
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = y1 * (2 - y1);
+              return [x, y1];
+            },
           },
           easeInOutQuad: {
             text: "easeInOutQuad",
@@ -382,16 +402,15 @@ export default {
             formula: "t<.5 ? 2t^2 : -1+(4-2t)t",
             equation: "t<.5 ? 2*t*t : -1+(4-2*t)*t",
             func(y) {
-              let y1 = y
-              let x  = 0
-              if(y1 < 5) {
-                x = 2 * y*y
+              let y1 = y;
+              let x = 0;
+              if (y1 < 5) {
+                x = 2 * y * y;
+              } else {
+                x = -1 + (4 - 2 * y) * y;
               }
-              else {
-                x = -1+(4-2*y)*y
-              }
-              return [x,y1]
-            }
+              return [x, y1];
+            },
           },
           easeInCubic: {
             text: "easeInCubic",
@@ -399,10 +418,10 @@ export default {
             formula: "t^3",
             equation: "t*t*t",
             func(y) {
-              let y1 = y
-              let x = Math.pow(y1,3)
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = Math.pow(y1, 3);
+              return [x, y1];
+            },
           },
           easeOutCubic: {
             text: "easeOutCubic",
@@ -422,10 +441,10 @@ export default {
             formula: "t^4",
             equation: "t*t*t*t",
             func(y) {
-              let y1 = y
-              let x = Math.pow(y1,4)
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = Math.pow(y1, 4);
+              return [x, y1];
+            },
           },
           easeOutQuart: {
             text: "easeOutQuart",
@@ -445,10 +464,10 @@ export default {
             formula: "t^5",
             equation: "t*t*t*t*t",
             func(y) {
-              let y1 = y
-              let x = Math.pow(y1,5)
-              return [x,y1]
-            }
+              let y1 = y;
+              let x = Math.pow(y1, 5);
+              return [x, y1];
+            },
           },
           easeOutQuint: {
             text: "easeOutQuint",
@@ -497,8 +516,8 @@ export default {
 
     ctxMass[0].moveTo(0, 0);
     ctxMass[0].lineTo(0, ctxMass[1].width);
- for(let i =0; i <= ctxMass[1].width; i = i + 50) {
-      ctxMass[0].fillText(` ${i} `, 0, i)
+    for (let i = 0; i <= ctxMass[1].width; i = i + 50) {
+      ctxMass[0].fillText(` ${i} `, 0, i);
     }
     ctxMass[0].fillText("3c", 0, ctxMass[1].width);
     ctxMass[0].font = "30px";
@@ -510,12 +529,11 @@ export default {
     ctxMass[0].lineTo(ctxMass[1].height, 0);
 
     // ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
-    for(let i =0; i <= ctxMass[1].height; i = i + 50) {
-      ctxMass[0].fillText(` ${i} `, i, 10)
+    for (let i = 0; i <= ctxMass[1].height; i = i + 50) {
+      ctxMass[0].fillText(` ${i} `, i, 10);
     }
     ctxMass[0].stroke();
 
-    
     let doc = this.classModules(".buttonpl");
     if (this.buttonPlay == false) {
       doc("buttonPlayAnim", "remove");
