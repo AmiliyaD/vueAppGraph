@@ -92,17 +92,22 @@
             <canvas width="650" height="500" class="" id="canvasEx"
               >aaaaf ffsd</canvas
             >
+          
           </div>
-          <div class=" border" style="height: 500px">
+          <div class=" border">
             <div class="block"></div>
           </div>
           <div class="body_graph__radioSlider">
-            <input type="range" style="width: 100%;" name="" id="" />
+            <input type="range" min="0" max="3" v-model='range' step="0.05" style="width: 100%;" name="" id="" />
+            {{range}}
           </div>
+          <svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 240 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="black" fill="transparent"/>
+          </svg>
           <div class="body_graph__button  d-flex justify-content-center">
             <button
               class="mx-auto buttonpl buttonMain"
-              v-on:click="buttonPlayFun()"
+              v-on:click="buttonPlayFun(), createGraph()"
             >
               Play
             </button>
@@ -118,9 +123,6 @@
   </div>
 </template>
 <script>
-// import myMix from '@/components/methodMixin.vue'
-// console.log(myMix)
-// import myMixin from '../components/methodMixin.vue'
 let myMix = {
   methods: {
     // ГРАФИКИ
@@ -129,13 +131,12 @@ let myMix = {
     createGraph(formula, id) {
       console.log([formula, id]);
       // проба 5
-      let result = this.normalFunction(formula, 3);
-      console.log(result);
+      let result = this.normalFunction(formula, this.range);
+      console.log(`РЕЗУЛЬТАТ ФУНКЦИИ --- ${result}`);
 
       // проба 6
 
       let doc = document.querySelector(".block").offsetWidth;
-
       let he = document.querySelector(".block").offsetHeight;
 
       console.log(doc, he);
@@ -169,19 +170,22 @@ let myMix = {
       ctx[0].lineWidth = 2;
       ctx[0].lineCap = "round";
 
-    // ЧТО ДЕЛАТЬ ------ 
+      // ЧТО ДЕЛАТЬ ------
       //1 ---- easeInQuad
-      // ctx[0].quadraticCurveTo(50,100,500,150);
+      // ctx[0].quadraticCurveTo(50,200,500,150);
       //2 --- easeOutSine [y, x --- координата искривления, y,x --- конечные точки] []
       //  ctx[0].quadraticCurveTo(500,100,500,400);
       // 3 --- easeInOutCubic
-      ctx[0].bezierCurveTo(10,500,400,200,500,500)
+      // ctx[0].bezierCurveTo(10, 500, 400, 200, 500, 500);
       // 4 -- easeOutQuint
       // ctx[0].bezierCurveTo(500, 20, 500, 0, 500, 500);
+      // 5 --- парабола
+      // ctx[0].bezierCurveTo(0, 0, 500, 250, 0, 500);
 
-
-
-
+      // проба 333
+      // ctx[0].bezierCurveTo(400, 50, 5, 500, 500, 500);
+      // ctx[0].bezierCurveTo(0, 400, 400, 0, 500, 500);
+  
       // ctx[0].bezierCurveTo(
       //   mapReal[0][0][0],
       //   mapReal[0][0][1],
@@ -193,20 +197,37 @@ let myMix = {
 
       // ПРОБА 3
 
-      // for(let i = 0; i < ctx[1].width; i = i + 1) {
-      //   let x = (i-ctx[1].width/2) / 400
-      //   let y = Math.pow(x,2)
-      //   ctx[0].fillRect(x * 400 + ctx[1].width, ctx[1].height - 400 * y,3,3)
-      // }
 
-      //  ctx[0].bezierCurveTo(mapReal[0][0][0],mapReal[0][0][1],mapReal[1][0][0],mapReal[1][0][1],mapReal[2][0][0],mapReal[2][0][1])
-
+ 
       //  [y,x | y,x | y,x]
-      // ctx[0].quadraticCurveTo(70,100,50,100)
-      // ctx[0].lineTo(eval(y),realX);
+      let P1 = [500, 20]
+      let P2 = [200, 400]
+
+      let coora = this.makeCoors(this.range,  [0,0],  P1,  P2);
+
+      ctx[0].bezierCurveTo(P1[0], P1[1], P2[0], P2[1], 500, 500);
+      console.log(coora);
       ctx[0].stroke();
     },
 
+
+
+    // ТЕПЕРЬ ПРОБУЕМ НАХОДИТЬ КОООРДИНТАЫЫ
+    makeCoors(t = 1, P0 = [0,0],  P1 = [0, 500], P2 = [500, 0]) {
+      
+      let x1 = Math.round( Math.pow((1 - t),2) * P0[1] + 2 * t * (1-t) * P1[1] + Math.pow(t,2) * P2[1]);
+      let y1 = Math.round( Math.pow((1 - t),2) * P0[0] + 2 * t * (1-t) * P1[0] + Math.pow(t,2) * P2[0]);
+
+
+      let x = Math.round((1 - t) * P1[1] + t * P2[1]);
+      let y = Math.round((1 - t) * P1[0] + t * P2[0]);
+      return [
+        {x: x, y: y},
+        {x1: x1, y1: y1}
+      ];
+    },
+
+    // остальные функции
     normalFunction(formul, t) {
       let t1 = `let t = ${t}`;
       let t2 = t1 + ";" + formul;
@@ -395,6 +416,7 @@ export default {
       checkedNames: [],
       checkedMass: [],
       a: 1,
+      range: 0,
       all: {
         description:
           "In the provided equations, t has value range 0-1. Source: https://gist.github.com/gre/1650294",
@@ -532,7 +554,7 @@ export default {
       "checkbox_anima__all"
     );
     this.checkedMass = rea;
-    console.log(rea);
+
 
     // выводим формулы
     rea.forEach((item) => {
@@ -573,7 +595,7 @@ export default {
     let doc = this.classModules(".buttonpl");
     if (this.buttonPlay == false) {
       doc("buttonPlayAnim", "remove");
-      console.log(false);
+    
       doc("buttonPlayChec", "remove");
       doc("buttonMain", "add");
     }
