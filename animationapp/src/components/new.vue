@@ -93,6 +93,9 @@
               >aaaaf ffsd</canvas
             >
           </div>
+          <div class=" border" style="height: 500px">
+            <div class="block"></div>
+          </div>
           <div class="body_graph__radioSlider">
             <input type="range" style="width: 100%;" name="" id="" />
           </div>
@@ -125,7 +128,23 @@ let myMix = {
     // строит графики
     createGraph(formula, id) {
       console.log([formula, id]);
+      // проба 5
+      let result = this.normalFunction(formula, 3);
+      console.log(result);
 
+      // проба 6
+
+      let doc = document.querySelector(".block").offsetWidth;
+
+      let he = document.querySelector(".block").offsetHeight;
+
+      console.log(doc, he);
+      // setInterval(function() {
+      //   doc = doc + 1
+
+      //   document.querySelector('.block').style.width = doc + 'px'
+      //   document.querySelector('.block').style.left = doc + 'px'
+      // },100)
       // проба
 
       let realX2 = [7, 12, 14];
@@ -149,25 +168,36 @@ let myMix = {
       ctx[0].moveTo(0, 0);
       ctx[0].lineWidth = 2;
       ctx[0].lineCap = "round";
-      ctx[0].bezierCurveTo(20, 20, 200, 200, 20, 400);
 
-      ctx[0].bezierCurveTo(
-        mapReal[0][0][0],
-        mapReal[0][0][1],
-        mapReal[1][0][0],
-        mapReal[1][0][1],
-        mapReal[2][0][0],
-        mapReal[2][0][1]
-      );
+    // ЧТО ДЕЛАТЬ ------ 
+      //1 ---- easeInQuad
+      // ctx[0].quadraticCurveTo(50,100,500,150);
+      //2 --- easeOutSine [y, x --- координата искривления, y,x --- конечные точки] []
+      //  ctx[0].quadraticCurveTo(500,100,500,400);
+      // 3 --- easeInOutCubic
+      ctx[0].bezierCurveTo(10,500,400,200,500,500)
+      // 4 -- easeOutQuint
+      // ctx[0].bezierCurveTo(500, 20, 500, 0, 500, 500);
 
+
+
+
+      // ctx[0].bezierCurveTo(
+      //   mapReal[0][0][0],
+      //   mapReal[0][0][1],
+      //   mapReal[1][0][0],
+      //   mapReal[1][0][1],
+      //   mapReal[2][0][0],
+      //   mapReal[2][0][1]
+      // );
 
       // ПРОБА 3
-    
-      for(let i = 0; i < ctx[1].width; i = i + 1) {
-        let x = (i-ctx[1].width/2) / 400
-        let y = Math.pow(x,2)
-        ctx[0].fillRect(x * 400 + ctx[1].width, ctx[1].height - 400 * y,3,3)
-      } 
+
+      // for(let i = 0; i < ctx[1].width; i = i + 1) {
+      //   let x = (i-ctx[1].width/2) / 400
+      //   let y = Math.pow(x,2)
+      //   ctx[0].fillRect(x * 400 + ctx[1].width, ctx[1].height - 400 * y,3,3)
+      // }
 
       //  ctx[0].bezierCurveTo(mapReal[0][0][0],mapReal[0][0][1],mapReal[1][0][0],mapReal[1][0][1],mapReal[2][0][0],mapReal[2][0][1])
 
@@ -177,6 +207,12 @@ let myMix = {
       ctx[0].stroke();
     },
 
+    normalFunction(formul, t) {
+      let t1 = `let t = ${t}`;
+      let t2 = t1 + ";" + formul;
+      let res = eval(t2);
+      return res;
+    },
     // ФУНКЦИЯ ДЛЯ КРИВЫХ
     curveBes(t = [0.2, 0.3, 0.4], y = [4, 5, 6], x = [5, 6, 7]) {
       console.log(t);
@@ -547,4 +583,22 @@ export default {
 
 <style>
 @import url("../assets/css/style.css");
+.block {
+  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+  transition: transform 0.6s cubic-bezier(0.11, 0, 0.5, 0);
+}
+.block:hover {
+  padding-left: 100px;
+  background: linear-gradient(
+    to bottom,
+    #1473e6,
+    cubic-bezier(0.11, 0, 0.5, 0),
+    #247b5e
+  );
+  -webkit-transition-duration: 2s;
+  transition-duration: 2s;
+  cursor: pointer;
+}
 </style>
