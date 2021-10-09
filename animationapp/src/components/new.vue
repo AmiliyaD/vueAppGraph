@@ -94,7 +94,7 @@
             class="svage"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
+            <!-- <path
               v-for="i in pathes"
               :key="i"
               class="squiggle"
@@ -103,12 +103,12 @@
               stroke-miterlimit="10"
               stroke-width="5"
               :d="i"
-            />
+            /> -->
             <path
               v-for="j in names"
               :key="j"
               :id="j"
-              class="squiggle"
+              class="someAnimation"
               fill="none"
               stroke="#bc85ff"
               stroke-miterlimit="10"
@@ -116,24 +116,11 @@
               d=""
             />
 
-            <!-- <circle cx='10' cy='10' r='10' id="special"></circle> -->
-
-            <!-- <path
-              clip-path="url(#clippy)"
-              class=" someAnimation"
-              fill="none"
-              stroke="#bc85ff"
-              stroke-miterlimit="10"
-              stroke-width="3"
-              :d="path"
-            /> -->
+          
 
             <!-- Highlight the curve vertex and control points -->
           </svg>
 
-          <div class=" border">
-            <div class="block"></div>
-          </div>
           <div class="body_graph__radioSlider">
             <input
               type="range"
@@ -145,7 +132,9 @@
               name=""
               id=""
             />
+          
             {{ range }}
+
           </div>
 
           <div class="body_graph__button  d-flex justify-content-center">
@@ -165,146 +154,198 @@
       </div>
     </div>
   </div>
-  {{ names }}
+
 </template>
 <script>
 let myMix = {
   methods: {
+       //4---------- ЧЕКБОКС ТОГГЛ
+       checkboxToggle(e) {
+      if (e.target.checked == false) {
+        console.log("ЧЕК БОК ОТЖАЛИ");
+
+        let doc = document.querySelector(`.${e.target.value}`);
+        doc.classList.remove("checkbox_anima__all");
+        console.log(this.checkedMass);
+        document.querySelector(".body-card").classList.add("aawaaaa");
+      }
+
+      // если не нажат
+      else {
+        let doc = document.querySelector(`.${e.target.value}`);
+        doc.classList.add("checkbox_anima__all");
+        console.log(doc);
+
+        // вставляем элемент
+
+        let mypath = this.takePath(e.target.value, this.all.easingFunctions);
+        console.log(mypath);
+        document.getElementById(e.target.value).setAttribute("d", mypath[1]);
+        this.nameChecked.push(e.target.value)
+      }
+    },
+
+    takePath(value, func) {
+      // расчитваем значения
+      let path = this.transformMassive([value], func, "some");
+      // let t = 1
+
+      let form = path[0].equation;
+      let nor = this.normalFunction(form, 5);
+
+
+      // просто поомщь
+      let aa = [
+        "M 5,5 C 350,90 450,50, 450,450",
+        "M 5,5 C53,441 400,100 436,430",
+        "M 5,5 C462,51 446,79 436,430",
+        "M 5,5 C53,441 43,441 436,430",
+      ];
+
+      let liner = [
+       {'linear': 'M5,5 C10,169 76,288 426,466',
+      }
+      ]
+      console.log(liner)
+      // let a = Math.floor(Math.random() * 3);
+
+      return [nor, aa[1]];
+    },
     // 1 -----  ГРАФИКИ
 
-    // строит графики
-    createGraph(formula, id) {
-      console.log([formula, id]);
-      // проба 5
-      let result = this.normalFunction(formula, this.range);
-      console.log(`РЕЗУЛЬТАТ ФУНКЦИИ --- ${result}`);
+    // // строит графики
+    // createGraph(formula, id) {
+    //   console.log([formula, id]);
+    //   // проба 5
+    //   // let result = this.normalFunction(formula, 1);
+    //   // console.log(`РЕЗУЛЬТАТ ФУНКЦИИ --- ${result}`);
 
-      // проба 6
+    //   // // проба 6
 
-      let doc = document.querySelector(".block").offsetWidth;
-      let he = document.querySelector(".block").offsetHeight;
+    //   // let doc = document.querySelector(".block").offsetWidth;
+    //   // let he = document.querySelector(".block").offsetHeight;
 
-      console.log(doc, he);
-      // setInterval(function() {
-      //   doc = doc + 1
+    //   // console.log(doc, he);
+    //   // // setInterval(function() {
+    //   // //   doc = doc + 1
 
-      //   document.querySelector('.block').style.width = doc + 'px'
-      //   document.querySelector('.block').style.left = doc + 'px'
-      // },100)
-      // проба
+    //   // //   document.querySelector('.block').style.width = doc + 'px'
+    //   // //   document.querySelector('.block').style.left = doc + 'px'
+    //   // // },100)
+    //   // // проба
 
-      let realX2 = [7, 12, 14];
-      let mapReal = realX2.map((item) => {
-        let allMass = [];
-        let x = `let t = ${item}`;
-        let y = x + "; " + formula;
-        let coors = [eval(y), item];
-        allMass.push(coors);
-        return allMass;
-      });
-      // проба 2
-      let c = this.curveBes([0.1, 0.7, 0.5], realX2, mapReal);
-      console.log(c);
-      console.log(mapReal);
+    //   // let realX2 = [7, 12, 14];
+    //   // let mapReal = realX2.map((item) => {
+    //   //   let allMass = [];
+    //   //   let x = `let t = ${item}`;
+    //   //   let y = x + "; " + formula;
+    //   //   let coors = [eval(y), item];
+    //   //   allMass.push(coors);
+    //   //   return allMass;
+    //   // });
+    //   // // проба 2
+    //   // let c = this.curveBes([0.1, 0.7, 0.5], realX2, mapReal);
+    //   // console.log(c);
+    //   // console.log(mapReal);
 
-      let canvasEx = document.getElementById("canvasEx");
-      let ctxe = canvasEx.getContext("2d");
-      let ctx = [ctxe, canvasEx];
-      ctx[0].beginPath();
-      ctx[0].moveTo(0, 0);
-      ctx[0].lineWidth = 2;
-      ctx[0].lineCap = "round";
+    //   // let canvasEx = document.getElementById("canvasEx");
+    //   // let ctxe = canvasEx.getContext("2d");
+    //   // let ctx = [ctxe, canvasEx];
+    //   // ctx[0].beginPath();
+    //   // ctx[0].moveTo(0, 0);
+    //   // ctx[0].lineWidth = 2;
+    //   // ctx[0].lineCap = "round";
 
-      // ЧТО ДЕЛАТЬ ------
-      //1 ---- easeInQuad
-      // ctx[0].quadraticCurveTo(50,200,500,150);
-      //2 --- easeOutSine [y, x --- координата искривления, y,x --- конечные точки] []
-      //  ctx[0].quadraticCurveTo(500,100,500,400);
-      // 3 --- easeInOutCubic
-      // ctx[0].bezierCurveTo(10, 500, 400, 200, 500, 500);
-      // 4 -- easeOutQuint
-      // ctx[0].bezierCurveTo(500, 20, 500, 0, 500, 500);
-      // 5 --- парабола
-      // ctx[0].bezierCurveTo(0, 0, 500, 250, 0, 500);
+    //   // // ЧТО ДЕЛАТЬ ------
+    //   // //1 ---- easeInQuad
+    //   // // ctx[0].quadraticCurveTo(50,200,500,150);
+    //   // //2 --- easeOutSine [y, x --- координата искривления, y,x --- конечные точки] []
+    //   // //  ctx[0].quadraticCurveTo(500,100,500,400);
+    //   // // 3 --- easeInOutCubic
+    //   // // ctx[0].bezierCurveTo(10, 500, 400, 200, 500, 500);
+    //   // // 4 -- easeOutQuint
+    //   // // ctx[0].bezierCurveTo(500, 20, 500, 0, 500, 500);
+    //   // // 5 --- парабола
+    //   // // ctx[0].bezierCurveTo(0, 0, 500, 250, 0, 500);
 
-      // проба 333
-      // ctx[0].bezierCurveTo(400, 50, 5, 500, 500, 500);
-      // ctx[0].bezierCurveTo(0, 400, 400, 0, 500, 500);
+    //   // // проба 333
+    //   // // ctx[0].bezierCurveTo(400, 50, 5, 500, 500, 500);
+    //   // // ctx[0].bezierCurveTo(0, 400, 400, 0, 500, 500);
 
-      // ПРОБА 3
+    //   // // ПРОБА 3
 
-      //  [y,x | y,x | y,x]
-      let P1 = [500, 20];
-      let P2 = [200, 400];
+    //   // //  [y,x | y,x | y,x]
+    //   // let P1 = [500, 20];
+    //   // let P2 = [200, 400];
 
-      let coora = this.makeCoors(this.range, [0, 0], P1, P2);
+    //   // let coora = this.makeCoors(this.range, [0, 0], P1, P2);
 
-      ctx[0].bezierCurveTo(P1[0], P1[1], P2[0], P2[1], 500, 500);
-      console.log(coora);
-      ctx[0].stroke();
-    },
+    //   // ctx[0].bezierCurveTo(P1[0], P1[1], P2[0], P2[1], 500, 500);
+    //   // console.log(coora);
+    //   // ctx[0].stroke();
+    // },
 
     // ТЕПЕРЬ ПРОБУЕМ НАХОДИТЬ КОООРДИНТАЫЫ
-    makeCoors(t = 1, P0 = [0, 0], P1 = [0, 500], P2 = [500, 0]) {
-      let x1 = Math.round(
-        Math.pow(1 - t, 2) * P0[1] +
-          2 * t * (1 - t) * P1[1] +
-          Math.pow(t, 2) * P2[1]
-      );
-      let y1 = Math.round(
-        Math.pow(1 - t, 2) * P0[0] +
-          2 * t * (1 - t) * P1[0] +
-          Math.pow(t, 2) * P2[0]
-      );
+    // makeCoors(t = 1, P0 = [0, 0], P1 = [0, 500], P2 = [500, 0]) {
+    //   let x1 = Math.round(
+    //     Math.pow(1 - t, 2) * P0[1] +
+    //       2 * t * (1 - t) * P1[1] +
+    //       Math.pow(t, 2) * P2[1]
+    //   );
+    //   let y1 = Math.round(
+    //     Math.pow(1 - t, 2) * P0[0] +
+    //       2 * t * (1 - t) * P1[0] +
+    //       Math.pow(t, 2) * P2[0]
+    //   );
 
-      let x = Math.round((1 - t) * P1[1] + t * P2[1]);
-      let y = Math.round((1 - t) * P1[0] + t * P2[0]);
-      return [
-        { x: x, y: y },
-        { x1: x1, y1: y1 },
-      ];
-    },
+    //   let x = Math.round((1 - t) * P1[1] + t * P2[1]);
+    //   let y = Math.round((1 - t) * P1[0] + t * P2[0]);
+    //   return [
+    //     { x: x, y: y },
+    //     { x1: x1, y1: y1 },
+    //   ];
+    // },
 
     // остальные функции
     normalFunction(formul, t) {
       let t1 = `let t = ${t}`;
-      let t2 = t1 + ";" + formul;
+      let t2 = t1 + "; " + formul;
       let res = eval(t2);
       return res;
     },
-    // ФУНКЦИЯ ДЛЯ КРИВЫХ
-    curveBes(t = [0.2, 0.3, 0.4], y = [4, 5, 6], x = [5, 6, 7]) {
-      console.log(t);
+    // // ФУНКЦИЯ ДЛЯ КРИВЫХ
+    // curveBes(t = [0.2, 0.3, 0.4], y = [4, 5, 6], x = [5, 6, 7]) {
+    //   console.log(t);
 
-      let xP = [];
-      let yP = [];
+    //   let xP = [];
+    //   let yP = [];
 
-      t.forEach((item) => {
-        let xPc = Math.round(
-          Math.pow(1 - item, 2) * x[0] +
-            2 * (1 - item) * x[1] +
-            Math.pow(item, 2) * x[2]
-        );
-        let yPc = Math.round(
-          Math.pow(1 - item, 2) * y[0] +
-            2 * (1 - item) * y[1] +
-            Math.pow(item, 2) * y[2]
-        );
-        xP.push(xPc);
-        yP.push(yPc);
-      });
+    //   t.forEach((item) => {
+    //     let xPc = Math.round(
+    //       Math.pow(1 - item, 2) * x[0] +
+    //         2 * (1 - item) * x[1] +
+    //         Math.pow(item, 2) * x[2]
+    //     );
+    //     let yPc = Math.round(
+    //       Math.pow(1 - item, 2) * y[0] +
+    //         2 * (1 - item) * y[1] +
+    //         Math.pow(item, 2) * y[2]
+    //     );
+    //     xP.push(xPc);
+    //     yP.push(yPc);
+    //   });
 
-      return [xP, yP];
-    },
+    //   return [xP, yP];
+    // },
 
     // создает канвас
     canvasFun() {
-      let canvasEx = document.getElementById("canvasEx");
-      let ctx = canvasEx.getContext("2d");
-      console.log(ctx);
-      ctx.translate(0, canvasEx.height);
-      ctx.rotate(-Math.PI / 2);
-      return [ctx, canvasEx];
+      // let canvasEx = document.getElementById("canvasEx");
+      // let ctx = canvasEx.getContext("2d");
+      // console.log(ctx);
+      // ctx.translate(0, canvasEx.height);
+      // ctx.rotate(-Math.PI / 2);
+      // return [ctx, canvasEx];
     },
 
     // кнопка графика
@@ -324,21 +365,30 @@ let myMix = {
 
     buttonPlayFun() {
       this.buttonPlay = !this.buttonPlay;
-      if (this.buttonPlay == true) {
-        document.querySelector(".someAnimation").classList.add("squiggle");
-      } else if (this.buttonPlay == false) {
-        document.querySelector(".someAnimation").classList.remove("squiggle");
-      }
+      // if (this.buttonPlay == true) {
+        
+
+      // } else if (this.buttonPlay == false) {
+        
+      // }
       let doc = this.classModules(".buttonpl");
       this.graph();
       if (this.buttonPlay == true) {
+   
         console.log(true);
         doc("buttonPlayAnim", "add");
         setTimeout(function() {
           doc("buttonPlayChec", "add");
           doc("buttonMain", "remove");
         }, 1000);
+        console.log(this.nameChecked)
+        this.nameChecked.forEach((item) => {
+          document.getElementById(item).classList.add("squiggle");
+        })
       } else if (this.buttonPlay == false) {
+        this.nameChecked.forEach((item) => {
+          document.getElementById(item).classList.remove("squiggle");
+        })
         doc("buttonPlayAnim", "remove");
         console.log(false);
         doc("buttonPlayChec", "remove");
@@ -405,61 +455,7 @@ let myMix = {
       }
     },
 
-    //4---------- ЧЕКБОКС ТОГГЛ
-    checkboxToggle(e) {
-      if (e.target.checked == false) {
-        console.log("ЧЕК БОК ОТЖАЛИ");
-
-        let doc = document.querySelector(`.${e.target.value}`);
-        doc.classList.remove("checkbox_anima__all");
-        console.log(this.checkedMass);
-        document.querySelector(".body-card").classList.add("aawaaaa");
-      }
-
-      // если не нажат
-      else {
-        let doc = document.querySelector(`.${e.target.value}`);
-        doc.classList.add("checkbox_anima__all");
-        console.log("НАЖАЛИ ЧЕК");
-
-        // добавляем имена в  массив
-        let vale = [e.target.value];
-        let transMass = this.transformMassive(
-          vale,
-          this.all.easingFunctions,
-          "checkbox_anima__all"
-        );
-
-        this.newMassives.push(transMass);
-        console.log(this.newMassives);
-
-        // вставляем элемент
-
-        let mypath = this.takePath(e.target.value, this.all.easingFunctions);
-        console.log(mypath);
-        // ОСТАЛОСЬ ДОБАВИТЬ НУЖНЫЕ ПУТИ
-        this.pathes.push(
-          "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27"
-        );
-        console.log(this.pathes);
-
-        document
-          .getElementById(e.target.value)
-          .setAttribute("d",mypath[1]);
-      }
-    },
-
-    takePath(value, func) {
-      let aa = [
-        "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27",
-        "M 70 110 C 170 140, 110 140, 410 110",
-        "M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80",
-      ];
-      let a = Math.floor(Math.random() * 3);
-
-      let path = this.transformMassive([value], func, "some");
-      return [path, aa[a]];
-    },
+ 
 
     // вспомогаттельная функция
     transformMassive(firstMassive, allMassive, classAdd) {
@@ -483,6 +479,8 @@ export default {
   name: "vue",
   data() {
     return {
+      range_two: 0,
+      nameChecked: [],
       names: [],
       modalWind: false,
       buttonPlay: false,
@@ -631,9 +629,8 @@ export default {
   computed: {},
   // при обновлении
   updated() {
-    this.pathes.push(
-      "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27"
-    );
+
+    
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
@@ -642,9 +639,9 @@ export default {
     this.checkedMass = rea;
 
     // выводим формулы
-    rea.forEach((item) => {
-      this.createGraph(item.equation, item.text);
-    });
+    // rea.forEach((item) => {
+    //   this.createGraph(item.equation, item.text);
+    // });
   },
   created() {
     for (let i in this.all.easingFunctions) {
@@ -656,32 +653,32 @@ export default {
   mounted() {
     // CANVAS
 
-    let ctxMass = this.canvasFun();
+    // let ctxMass = this.canvasFun();
 
-    // let canvH = ctxMass[1].height
+    // // let canvH = ctxMass[1].height
 
-    // FIRST
-    ctxMass[0].beginPath();
+    // // FIRST
+    // ctxMass[0].beginPath();
 
-    ctxMass[0].moveTo(0, 0);
-    ctxMass[0].lineTo(0, ctxMass[1].width);
-    for (let i = 0; i <= ctxMass[1].width; i = i + 50) {
-      ctxMass[0].fillText(` ${i} `, 0, i);
-    }
-    ctxMass[0].fillText("3c", 0, ctxMass[1].width);
-    ctxMass[0].font = "30px";
-    ctxMass[0].stroke();
+    // ctxMass[0].moveTo(0, 0);
+    // ctxMass[0].lineTo(0, ctxMass[1].width);
+    // for (let i = 0; i <= ctxMass[1].width; i = i + 50) {
+    //   ctxMass[0].fillText(` ${i} `, 0, i);
+    // }
+    // ctxMass[0].fillText("3c", 0, ctxMass[1].width);
+    // ctxMass[0].font = "30px";
+    // ctxMass[0].stroke();
 
-    // SECOND
-    ctxMass[0].beginPath();
-    ctxMass[0].moveTo(0, 0);
-    ctxMass[0].lineTo(ctxMass[1].height, 0);
+    // // SECOND
+    // ctxMass[0].beginPath();
+    // ctxMass[0].moveTo(0, 0);
+    // ctxMass[0].lineTo(ctxMass[1].height, 0);
 
-    // ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
-    for (let i = 0; i <= ctxMass[1].height; i = i + 50) {
-      ctxMass[0].fillText(` ${i} `, i, 10);
-    }
-    ctxMass[0].stroke();
+    // // ctxMass[0].fillText("100", ctxMass[1].height - 20, 10);
+    // for (let i = 0; i <= ctxMass[1].height; i = i + 50) {
+    //   ctxMass[0].fillText(` ${i} `, i, 10);
+    // }
+    // ctxMass[0].stroke();
 
     let doc = this.classModules(".buttonpl");
     if (this.buttonPlay == false) {

@@ -1,7 +1,7 @@
 .squiggle {
   stroke-dasharray: 800;
   stroke-dashoffset: 800;
-  animation: draw 5s linear infinite ;
+  animation: draw 6s linear infinite ;
 }
 
 @keyframes draw {
