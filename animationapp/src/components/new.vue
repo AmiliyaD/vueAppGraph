@@ -87,21 +87,38 @@
           <h2>
             Graphic
           </h2>
-     
+
           <svg
             width="500"
             height="500"
             class="svage"
             xmlns="http://www.w3.org/2000/svg"
           >
-          <path v-for='i in pathes' :key='i' class="squiggle" fill="none" stroke="#bc85ff" stroke-miterlimit="10" stroke-width="5" :d="i" />
-          <path v-for='j in names' :key='j' :id='j'  class="squiggle" fill="none" stroke="#bc85ff" stroke-miterlimit="10" stroke-width="5" d="" />
-        
-        
-          <!-- <circle cx='10' cy='10' r='10' id="special"></circle> -->
-           
-         
             <path
+              v-for="i in pathes"
+              :key="i"
+              class="squiggle"
+              fill="none"
+              stroke="#bc85ff"
+              stroke-miterlimit="10"
+              stroke-width="5"
+              :d="i"
+            />
+            <path
+              v-for="j in names"
+              :key="j"
+              :id="j"
+              class="squiggle"
+              fill="none"
+              stroke="#bc85ff"
+              stroke-miterlimit="10"
+              stroke-width="5"
+              d=""
+            />
+
+            <!-- <circle cx='10' cy='10' r='10' id="special"></circle> -->
+
+            <!-- <path
               clip-path="url(#clippy)"
               class=" someAnimation"
               fill="none"
@@ -109,11 +126,11 @@
               stroke-miterlimit="10"
               stroke-width="3"
               :d="path"
-            />
-          
+            /> -->
+
             <!-- Highlight the curve vertex and control points -->
           </svg>
-        
+
           <div class=" border">
             <div class="block"></div>
           </div>
@@ -148,7 +165,7 @@
       </div>
     </div>
   </div>
-  {{names}}
+  {{ names }}
 </template>
 <script>
 let myMix = {
@@ -417,22 +434,31 @@ let myMix = {
         console.log(this.newMassives);
 
         // вставляем элемент
-       
-        let mypath = this.takePath(e.target.value, this.all.easingFunctions)
-        console.log(mypath)
-        // ОСТАЛОСЬ ДОБАВИТЬ НУЖНЫЕ ПУТИ
-       this.pathes.push('M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27')
-       console.log(this.pathes)
 
-       document.getElementById(e.target.value).setAttribute('d', "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27'")
-     
+        let mypath = this.takePath(e.target.value, this.all.easingFunctions);
+        console.log(mypath);
+        // ОСТАЛОСЬ ДОБАВИТЬ НУЖНЫЕ ПУТИ
+        this.pathes.push(
+          "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27"
+        );
+        console.log(this.pathes);
+
+        document
+          .getElementById(e.target.value)
+          .setAttribute("d",mypath[1]);
       }
     },
 
     takePath(value, func) {
-      
-      let path = this.transformMassive([value], func, 'some')
-      return path
+      let aa = [
+        "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27",
+        "M 70 110 C 170 140, 110 140, 410 110",
+        "M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80",
+      ];
+      let a = Math.floor(Math.random() * 3);
+
+      let path = this.transformMassive([value], func, "some");
+      return [path, aa[a]];
     },
 
     // вспомогаттельная функция
@@ -461,10 +487,7 @@ export default {
       modalWind: false,
       buttonPlay: false,
       path: "M 0,0 C 150,90 450,50, 300,400",
-      pathes: [
-        'M 0,0 C 150,90 450,50, 300,400',
-       
-      ],
+      pathes: ["M 0,0 C 150,90 450,50, 300,400"],
       classes: [
         "body_about_option__card",
         "body_card_animation",
@@ -608,7 +631,9 @@ export default {
   computed: {},
   // при обновлении
   updated() {
-    this.pathes.push("M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27")
+    this.pathes.push(
+      "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27"
+    );
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
@@ -621,13 +646,12 @@ export default {
       this.createGraph(item.equation, item.text);
     });
   },
-created() {
-  for(let i in this.all.easingFunctions) {
-
-this.names.push(this.all.easingFunctions[i].text)
-}
-console.log(this.names)
-},
+  created() {
+    for (let i in this.all.easingFunctions) {
+      this.names.push(this.all.easingFunctions[i].text);
+    }
+    console.log(this.names);
+  },
   // ПРИ МОНТИРОВАНИИ
   mounted() {
     // CANVAS
