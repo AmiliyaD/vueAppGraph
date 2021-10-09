@@ -87,27 +87,54 @@
           <h2>
             Graphic
           </h2>
-
-          <div style="height: 500px;" class="body_graph_graph ">
-            <canvas width="650" height="500" class="" id="canvasEx"
-              >aaaaf ffsd</canvas
-            >
+     
+          <svg
+            width="500"
+            height="500"
+            class="svage"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+          <path v-for='i in pathes' :key='i' class="squiggle" fill="none" stroke="#bc85ff" stroke-miterlimit="10" stroke-width="5" :d="i" />
+          <path v-for='j in names' :key='j' :id='j'  class="squiggle" fill="none" stroke="#bc85ff" stroke-miterlimit="10" stroke-width="5" d="" />
+        
+        
+          <!-- <circle cx='10' cy='10' r='10' id="special"></circle> -->
+           
+         
+            <path
+              clip-path="url(#clippy)"
+              class=" someAnimation"
+              fill="none"
+              stroke="#bc85ff"
+              stroke-miterlimit="10"
+              stroke-width="3"
+              :d="path"
+            />
           
-          </div>
+            <!-- Highlight the curve vertex and control points -->
+          </svg>
+        
           <div class=" border">
             <div class="block"></div>
           </div>
           <div class="body_graph__radioSlider">
-            <input type="range" min="0" max="3" v-model='range' step="0.05" style="width: 100%;" name="" id="" />
-            {{range}}
+            <input
+              type="range"
+              min="0"
+              max="450"
+              v-model="range"
+              step="1"
+              style="width: 100%;"
+              name=""
+              id=""
+            />
+            {{ range }}
           </div>
-          <svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 240 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="black" fill="transparent"/>
-          </svg>
+
           <div class="body_graph__button  d-flex justify-content-center">
             <button
               class="mx-auto buttonpl buttonMain"
-              v-on:click="buttonPlayFun(), createGraph()"
+              v-on:click="buttonPlayFun()"
             >
               Play
             </button>
@@ -121,11 +148,12 @@
       </div>
     </div>
   </div>
+  {{names}}
 </template>
 <script>
 let myMix = {
   methods: {
-    // ГРАФИКИ
+    // 1 -----  ГРАФИКИ
 
     // строит графики
     createGraph(formula, id) {
@@ -185,45 +213,38 @@ let myMix = {
       // проба 333
       // ctx[0].bezierCurveTo(400, 50, 5, 500, 500, 500);
       // ctx[0].bezierCurveTo(0, 400, 400, 0, 500, 500);
-  
-      // ctx[0].bezierCurveTo(
-      //   mapReal[0][0][0],
-      //   mapReal[0][0][1],
-      //   mapReal[1][0][0],
-      //   mapReal[1][0][1],
-      //   mapReal[2][0][0],
-      //   mapReal[2][0][1]
-      // );
 
       // ПРОБА 3
 
-
- 
       //  [y,x | y,x | y,x]
-      let P1 = [500, 20]
-      let P2 = [200, 400]
+      let P1 = [500, 20];
+      let P2 = [200, 400];
 
-      let coora = this.makeCoors(this.range,  [0,0],  P1,  P2);
+      let coora = this.makeCoors(this.range, [0, 0], P1, P2);
 
       ctx[0].bezierCurveTo(P1[0], P1[1], P2[0], P2[1], 500, 500);
       console.log(coora);
       ctx[0].stroke();
     },
 
-
-
     // ТЕПЕРЬ ПРОБУЕМ НАХОДИТЬ КОООРДИНТАЫЫ
-    makeCoors(t = 1, P0 = [0,0],  P1 = [0, 500], P2 = [500, 0]) {
-      
-      let x1 = Math.round( Math.pow((1 - t),2) * P0[1] + 2 * t * (1-t) * P1[1] + Math.pow(t,2) * P2[1]);
-      let y1 = Math.round( Math.pow((1 - t),2) * P0[0] + 2 * t * (1-t) * P1[0] + Math.pow(t,2) * P2[0]);
-
+    makeCoors(t = 1, P0 = [0, 0], P1 = [0, 500], P2 = [500, 0]) {
+      let x1 = Math.round(
+        Math.pow(1 - t, 2) * P0[1] +
+          2 * t * (1 - t) * P1[1] +
+          Math.pow(t, 2) * P2[1]
+      );
+      let y1 = Math.round(
+        Math.pow(1 - t, 2) * P0[0] +
+          2 * t * (1 - t) * P1[0] +
+          Math.pow(t, 2) * P2[0]
+      );
 
       let x = Math.round((1 - t) * P1[1] + t * P2[1]);
       let y = Math.round((1 - t) * P1[0] + t * P2[0]);
       return [
-        {x: x, y: y},
-        {x1: x1, y1: y1}
+        { x: x, y: y },
+        { x1: x1, y1: y1 },
       ];
     },
 
@@ -271,25 +292,26 @@ let myMix = {
 
     // кнопка графика
     graph() {
-      if (this.buttonPlay == true) {
-        setTimeout(
-          function() {
-            let doc = this.classModules(".buttonpl");
-            this.buttonPlay = false;
-            doc("buttonPlayAnim", "remove");
-            console.log(false);
-            doc("buttonPlayChec", "remove");
-            doc("buttonMain", "add");
-            console.log(this.buttonPlay);
-          }.bind(this),
-          3000
-        );
+      if (this.buttonPlay == false) {
+        let doc = this.classModules(".buttonpl");
+        this.buttonPlay = false;
+        doc("buttonPlayAnim", "remove");
+        console.log(false);
+        doc("buttonPlayChec", "remove");
+        doc("buttonMain", "add");
+        console.log(this.buttonPlay);
+        setTimeout(function() {}.bind(this), 5000);
       }
     },
-    // ЧЕК БОКСЫ
+    //2------------  ЧЕК БОКСЫ
 
     buttonPlayFun() {
       this.buttonPlay = !this.buttonPlay;
+      if (this.buttonPlay == true) {
+        document.querySelector(".someAnimation").classList.add("squiggle");
+      } else if (this.buttonPlay == false) {
+        document.querySelector(".someAnimation").classList.remove("squiggle");
+      }
       let doc = this.classModules(".buttonpl");
       this.graph();
       if (this.buttonPlay == true) {
@@ -322,6 +344,8 @@ let myMix = {
         }
       };
     },
+
+    // 3------ МОДАЛЬНОЕ ОКНО
     modal() {
       this.modalWind = !this.modalWind;
       this.modalWindow(".modal-window", ".modal_down");
@@ -364,15 +388,14 @@ let myMix = {
       }
     },
 
-    // ЧЕКБОКС ТОГГЛ
+    //4---------- ЧЕКБОКС ТОГГЛ
     checkboxToggle(e) {
       if (e.target.checked == false) {
-        console.log(e.target.value);
-        console.log(e);
-        this.someFun();
+        console.log("ЧЕК БОК ОТЖАЛИ");
 
         let doc = document.querySelector(`.${e.target.value}`);
         doc.classList.remove("checkbox_anima__all");
+        console.log(this.checkedMass);
         document.querySelector(".body-card").classList.add("aawaaaa");
       }
 
@@ -380,9 +403,32 @@ let myMix = {
       else {
         let doc = document.querySelector(`.${e.target.value}`);
         doc.classList.add("checkbox_anima__all");
-        console.log(this.checkedMass);
+        console.log("НАЖАЛИ ЧЕК");
+
+        // добавляем имена в  массив
+        let vale = [e.target.value];
+        let transMass = this.transformMassive(
+          vale,
+          this.all.easingFunctions,
+          "checkbox_anima__all"
+        );
+
+        this.newMassives.push(transMass);
+        console.log(this.newMassives);
+
+        // вставляем элемент
+       
+
+        // ОСТАЛОСЬ ДОБАВИТЬ НУЖНЫЕ ПУТИ
+       this.pathes.push('M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27')
+       console.log(this.pathes)
+
+       document.getElementById(e.target.value).setAttribute('d', "M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27'")
+     
       }
     },
+
+    // вспомогаттельная функция
     transformMassive(firstMassive, allMassive, classAdd) {
       let checkedMassives = [];
 
@@ -404,8 +450,14 @@ export default {
   name: "vue",
   data() {
     return {
+      names: [],
       modalWind: false,
       buttonPlay: false,
+      path: "M 0,0 C 150,90 450,50, 300,400",
+      pathes: [
+        'M 0,0 C 150,90 450,50, 300,400',
+       
+      ],
       classes: [
         "body_about_option__card",
         "body_card_animation",
@@ -417,6 +469,7 @@ export default {
       checkedMass: [],
       a: 1,
       range: 0,
+      newMassives: [],
       all: {
         description:
           "In the provided equations, t has value range 0-1. Source: https://gist.github.com/gre/1650294",
@@ -547,7 +600,8 @@ export default {
 
   computed: {},
   // при обновлении
-  beforeUpdate() {
+  updated() {
+    this.pathes.push("M14.2 65.54s36-36.79 56.31-35.66 38.6 27.31 58.13 26.56 26.34-5.91 37.6-13 30.53-19.52 39.48-19.14 19.48 8.23 31.12 19.87 18.91 13.2 25.25 13.16S278.24 58 297 40.76s25.86-17.86 31.49-17.86 48.11 15.42 65 13.27")
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
@@ -555,16 +609,22 @@ export default {
     );
     this.checkedMass = rea;
 
-
     // выводим формулы
     rea.forEach((item) => {
       this.createGraph(item.equation, item.text);
     });
   },
+created() {
+  for(let i in this.all.easingFunctions) {
 
+this.names.push(this.all.easingFunctions[i].text)
+}
+console.log(this.names)
+},
   // ПРИ МОНТИРОВАНИИ
   mounted() {
     // CANVAS
+
     let ctxMass = this.canvasFun();
 
     // let canvH = ctxMass[1].height
@@ -595,7 +655,7 @@ export default {
     let doc = this.classModules(".buttonpl");
     if (this.buttonPlay == false) {
       doc("buttonPlayAnim", "remove");
-    
+
       doc("buttonPlayChec", "remove");
       doc("buttonMain", "add");
     }
