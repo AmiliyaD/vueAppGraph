@@ -116,8 +116,6 @@
               d=""
             />
 
-          
-
             <!-- Highlight the curve vertex and control points -->
           </svg>
 
@@ -125,16 +123,16 @@
             <input
               type="range"
               min="0"
-              max="450"
+              max="800"
               v-model="range"
               step="1"
+              v-on:change="radionBut()"
               style="width: 100%;"
               name=""
               id=""
             />
-          
-            {{ range }}
 
+            {{ range }}
           </div>
 
           <div class="body_graph__button  d-flex justify-content-center">
@@ -154,13 +152,22 @@
       </div>
     </div>
   </div>
-
 </template>
 <script>
 let myMix = {
   methods: {
-       //4---------- ЧЕКБОКС ТОГГЛ
-       checkboxToggle(e) {
+    radionBut() {
+      
+      console.log(this.nameChecked);
+      this.nameChecked.forEach((item) => {
+        document
+          .getElementById(item)
+          .style.setProperty("stroke-dashoffset", this.range);
+      });
+      console.log(this.range);
+    },
+    //4---------- ЧЕКБОКС ТОГГЛ
+    checkboxToggle(e) {
       if (e.target.checked == false) {
         console.log("ЧЕК БОК ОТЖАЛИ");
 
@@ -181,7 +188,7 @@ let myMix = {
         let mypath = this.takePath(e.target.value, this.all.easingFunctions);
         console.log(mypath);
         document.getElementById(e.target.value).setAttribute("d", mypath[1]);
-        this.nameChecked.push(e.target.value)
+        this.nameChecked.push(e.target.value);
       }
     },
 
@@ -193,118 +200,58 @@ let myMix = {
       let form = path[0].equation;
       let nor = this.normalFunction(form, 5);
 
-
+      this.thisName = path[0].text;
       // просто поомщь
-      let aa = [
-        "M 5,5 C 350,90 450,50, 450,450",
-        "M 5,5 C53,441 400,100 436,430",
-        "M 5,5 C462,51 446,79 436,430",
-        "M 5,5 C53,441 43,441 436,430",
-      ];
 
-      let liner = [
-       {'linear': 'M5,5 C10,169 76,288 426,466',
-      }
-      ]
-      console.log(liner)
+      let liner = {
+        linear: {
+          text: "M5,5 C50,50 400,400 400,400",
+        },
+        easeInQuad: {
+          text: "M477,482 C128,441 14,284 16,11",
+        },
+        easeOutQuad: {
+          text: "M497,1 C278,0 166,80 1,478",
+        },
+        easeInCubic: {
+          text: "M497,1 C484,412 458,498 4,498",
+        },
+        easeInOutCubic: {
+          text: "M497,1 C113,0 489,441 4,498",
+        },
+        easeInOutQuad: {
+          text: "M497,1 C246,25 437,450 4,498",
+        },
+        easeInQuart: {
+          text: "M497,1 C446,423 356,487 4,498",
+        },
+        easeOutQuart: {
+          text: 'M6,568 C6,13 448,-4 591,19'
+        },
+        easeOutCubic: {
+          text: 'M-4,589 C99,49 448,-4 598,11'
+        },
+        easeInQuint: {
+          text: 'M10,491 C380,494 481,408 484,23'
+        },
+        easeOutQuint: {
+          text: 'M0,488 C-3,13 273,-3 495,9'
+        },
+        easeInOutQuart: {
+          text: 'M17,491 C498,484 37,13 475,1'
+        },
+        easeInOutQuint: {
+          text: 'M17,491 C374,463 190,54 477,-3'
+        }
+      };
+      let onePath = this.transformMassive([value], liner, "class");
+      console.log(onePath[0].text);
+
       // let a = Math.floor(Math.random() * 3);
 
-      return [nor, aa[1]];
+      return [nor, onePath[0].text];
     },
-    // 1 -----  ГРАФИКИ
 
-    // // строит графики
-    // createGraph(formula, id) {
-    //   console.log([formula, id]);
-    //   // проба 5
-    //   // let result = this.normalFunction(formula, 1);
-    //   // console.log(`РЕЗУЛЬТАТ ФУНКЦИИ --- ${result}`);
-
-    //   // // проба 6
-
-    //   // let doc = document.querySelector(".block").offsetWidth;
-    //   // let he = document.querySelector(".block").offsetHeight;
-
-    //   // console.log(doc, he);
-    //   // // setInterval(function() {
-    //   // //   doc = doc + 1
-
-    //   // //   document.querySelector('.block').style.width = doc + 'px'
-    //   // //   document.querySelector('.block').style.left = doc + 'px'
-    //   // // },100)
-    //   // // проба
-
-    //   // let realX2 = [7, 12, 14];
-    //   // let mapReal = realX2.map((item) => {
-    //   //   let allMass = [];
-    //   //   let x = `let t = ${item}`;
-    //   //   let y = x + "; " + formula;
-    //   //   let coors = [eval(y), item];
-    //   //   allMass.push(coors);
-    //   //   return allMass;
-    //   // });
-    //   // // проба 2
-    //   // let c = this.curveBes([0.1, 0.7, 0.5], realX2, mapReal);
-    //   // console.log(c);
-    //   // console.log(mapReal);
-
-    //   // let canvasEx = document.getElementById("canvasEx");
-    //   // let ctxe = canvasEx.getContext("2d");
-    //   // let ctx = [ctxe, canvasEx];
-    //   // ctx[0].beginPath();
-    //   // ctx[0].moveTo(0, 0);
-    //   // ctx[0].lineWidth = 2;
-    //   // ctx[0].lineCap = "round";
-
-    //   // // ЧТО ДЕЛАТЬ ------
-    //   // //1 ---- easeInQuad
-    //   // // ctx[0].quadraticCurveTo(50,200,500,150);
-    //   // //2 --- easeOutSine [y, x --- координата искривления, y,x --- конечные точки] []
-    //   // //  ctx[0].quadraticCurveTo(500,100,500,400);
-    //   // // 3 --- easeInOutCubic
-    //   // // ctx[0].bezierCurveTo(10, 500, 400, 200, 500, 500);
-    //   // // 4 -- easeOutQuint
-    //   // // ctx[0].bezierCurveTo(500, 20, 500, 0, 500, 500);
-    //   // // 5 --- парабола
-    //   // // ctx[0].bezierCurveTo(0, 0, 500, 250, 0, 500);
-
-    //   // // проба 333
-    //   // // ctx[0].bezierCurveTo(400, 50, 5, 500, 500, 500);
-    //   // // ctx[0].bezierCurveTo(0, 400, 400, 0, 500, 500);
-
-    //   // // ПРОБА 3
-
-    //   // //  [y,x | y,x | y,x]
-    //   // let P1 = [500, 20];
-    //   // let P2 = [200, 400];
-
-    //   // let coora = this.makeCoors(this.range, [0, 0], P1, P2);
-
-    //   // ctx[0].bezierCurveTo(P1[0], P1[1], P2[0], P2[1], 500, 500);
-    //   // console.log(coora);
-    //   // ctx[0].stroke();
-    // },
-
-    // ТЕПЕРЬ ПРОБУЕМ НАХОДИТЬ КОООРДИНТАЫЫ
-    // makeCoors(t = 1, P0 = [0, 0], P1 = [0, 500], P2 = [500, 0]) {
-    //   let x1 = Math.round(
-    //     Math.pow(1 - t, 2) * P0[1] +
-    //       2 * t * (1 - t) * P1[1] +
-    //       Math.pow(t, 2) * P2[1]
-    //   );
-    //   let y1 = Math.round(
-    //     Math.pow(1 - t, 2) * P0[0] +
-    //       2 * t * (1 - t) * P1[0] +
-    //       Math.pow(t, 2) * P2[0]
-    //   );
-
-    //   let x = Math.round((1 - t) * P1[1] + t * P2[1]);
-    //   let y = Math.round((1 - t) * P1[0] + t * P2[0]);
-    //   return [
-    //     { x: x, y: y },
-    //     { x1: x1, y1: y1 },
-    //   ];
-    // },
 
     // остальные функции
     normalFunction(formul, t) {
@@ -313,40 +260,8 @@ let myMix = {
       let res = eval(t2);
       return res;
     },
-    // // ФУНКЦИЯ ДЛЯ КРИВЫХ
-    // curveBes(t = [0.2, 0.3, 0.4], y = [4, 5, 6], x = [5, 6, 7]) {
-    //   console.log(t);
 
-    //   let xP = [];
-    //   let yP = [];
 
-    //   t.forEach((item) => {
-    //     let xPc = Math.round(
-    //       Math.pow(1 - item, 2) * x[0] +
-    //         2 * (1 - item) * x[1] +
-    //         Math.pow(item, 2) * x[2]
-    //     );
-    //     let yPc = Math.round(
-    //       Math.pow(1 - item, 2) * y[0] +
-    //         2 * (1 - item) * y[1] +
-    //         Math.pow(item, 2) * y[2]
-    //     );
-    //     xP.push(xPc);
-    //     yP.push(yPc);
-    //   });
-
-    //   return [xP, yP];
-    // },
-
-    // создает канвас
-    canvasFun() {
-      // let canvasEx = document.getElementById("canvasEx");
-      // let ctx = canvasEx.getContext("2d");
-      // console.log(ctx);
-      // ctx.translate(0, canvasEx.height);
-      // ctx.rotate(-Math.PI / 2);
-      // return [ctx, canvasEx];
-    },
 
     // кнопка графика
     graph() {
@@ -366,29 +281,29 @@ let myMix = {
     buttonPlayFun() {
       this.buttonPlay = !this.buttonPlay;
       // if (this.buttonPlay == true) {
-        
 
       // } else if (this.buttonPlay == false) {
-        
+
       // }
       let doc = this.classModules(".buttonpl");
       this.graph();
       if (this.buttonPlay == true) {
-   
+      
         console.log(true);
         doc("buttonPlayAnim", "add");
         setTimeout(function() {
           doc("buttonPlayChec", "add");
           doc("buttonMain", "remove");
         }, 1000);
-        console.log(this.nameChecked)
+        console.log(this.nameChecked);
         this.nameChecked.forEach((item) => {
           document.getElementById(item).classList.add("squiggle");
-        })
+        });
       } else if (this.buttonPlay == false) {
+        // this.range = 800
         this.nameChecked.forEach((item) => {
           document.getElementById(item).classList.remove("squiggle");
-        })
+        });
         doc("buttonPlayAnim", "remove");
         console.log(false);
         doc("buttonPlayChec", "remove");
@@ -455,8 +370,6 @@ let myMix = {
       }
     },
 
- 
-
     // вспомогаттельная функция
     transformMassive(firstMassive, allMassive, classAdd) {
       let checkedMassives = [];
@@ -479,6 +392,7 @@ export default {
   name: "vue",
   data() {
     return {
+      thisName: "",
       range_two: 0,
       nameChecked: [],
       names: [],
@@ -629,8 +543,6 @@ export default {
   computed: {},
   // при обновлении
   updated() {
-
-    
     let rea = this.transformMassive(
       this.checkedNames,
       this.all.easingFunctions,
